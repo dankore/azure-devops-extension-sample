@@ -1,20 +1,21 @@
 {
     "manifestVersion": 1,
-    "id": "samples",
-    "publisher": "",
-    "version": "1.0.464",
-    "name": "Extension Sample",
-    "description": "Azure DevOps extension sample",
+    "id": "global-work-item-creator",
+    "publisher": "dankore-software",
+    "version": "2.0.14",
+    "name": "Global Work Item Creator",
+    "description": "Create stories and tasks in any project from your dashboard. Pick project, work item type, area path, and create work items across all your Azure DevOps projects.",
     "categories": [
-        "Azure Pipelines"
+        "Azure Boards"
     ],
+    "public": false,
     "targets": [
         {
             "id": "Microsoft.VisualStudio.Services"
         }
     ],
     "icons": {
-        "default": "logo.png"
+        "default": "static/logo.png"
     },
     "content": {
         "details": {

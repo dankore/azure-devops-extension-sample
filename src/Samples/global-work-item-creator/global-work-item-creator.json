@@ -1,0 +1,29 @@
+{
+    "contributions": [
+        {
+            "id": "global-work-item-creator-widget",
+            "type": "ms.vss-dashboards-web.widget",
+            "targets": [
+                "ms.vss-dashboards-web.widget-catalog"
+            ],
+            "properties": {
+                "name": "Global Work Item Creator",
+                "description": "Create stories and tasks in any project from your dashboard. Pick project, work item type, area path, and create.",
+                "catalogIconUrl": "static/logo.png",
+                "uri": "dist/global-work-item-creator/global-work-item-creator.html",
+                "isNameConfigurable": true,
+                "supportedSizes": [
+                    { "rowSpan": 2, "columnSpan": 2 },
+                    { "rowSpan": 2, "columnSpan": 3 }
+                ],
+                "supportedScopes": ["project_team"]
+            }
+        }
+    ],
+    "scopes": [
+        "vso.work_write",
+        "vso.project",
+        "vso.graph",
+        "vso.tokens"
+    ]
+}
