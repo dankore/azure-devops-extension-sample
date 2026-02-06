@@ -1,0 +1,130 @@
+@import "azure-devops-ui/Core/_platformCommon.scss";
+
+#root {
+    overflow: hidden;
+}
+
+.pc-content {
+    padding: 16px 20px;
+    width: 100%;
+    height: 100%;
+    box-sizing: border-box;
+    border-radius: 4px;
+    border: 1px solid rgba(0, 0, 0, 0.06);
+    background: #ffffff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.03);
+    overflow-y: auto;
+}
+
+.pc-title {
+    font-size: $fontSizeL;
+    margin: 0 0 4px 0;
+    font-weight: 600;
+    letter-spacing: 0.01em;
+    color: #004578;
+}
+
+.pc-subtitle {
+    margin: 0 0 16px 0;
+    font-size: $fontSize;
+    color: #605e5c;
+}
+
+.pc-field {
+    margin-bottom: 16px;
+}
+
+.pc-label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 4px;
+    font-size: $fontSize;
+}
+
+.pc-textarea {
+    width: 100%;
+    min-height: 72px;
+    padding: 8px 12px;
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    border-radius: 2px;
+    font-family: inherit;
+    font-size: $fontSize;
+    resize: vertical;
+    box-sizing: border-box;
+
+    &:focus {
+        outline: none;
+        border-color: #0078d4;
+        box-shadow: 0 0 0 1px #0078d4;
+    }
+
+    &::placeholder {
+        color: #8a8886;
+    }
+}
+
+.pc-select {
+    width: 100%;
+    min-height: 32px;
+    padding: 6px 10px;
+    font-size: $fontSize;
+    font-family: inherit;
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    border-radius: 2px;
+    background: #fff;
+    color: #323130;
+    cursor: pointer;
+
+    &:focus {
+        outline: 1px solid #0078d4;
+        border-color: #0078d4;
+    }
+}
+
+.pc-actions {
+    margin-top: 16px;
+    display: flex;
+    gap: 8px;
+}
+
+.pc-status {
+    margin: 0 0 16px 0;
+    padding: 10px 12px;
+    font-size: $fontSize;
+    border-radius: 2px;
+    border-left: 3px solid transparent;
+}
+
+.pc-status-content {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.pc-project-link {
+    font-weight: 600;
+    color: #107c10;
+    text-decoration: underline;
+    &:hover {
+        color: #0d5c0d;
+    }
+}
+
+.pc-status.success {
+    background: #dff6dd;
+    color: #107c10;
+    border-left-color: #107c10;
+}
+
+.pc-status.error {
+    background: #fde7e9;
+    color: #a80000;
+    border-left-color: #a80000;
+}
+
+.pc-loading {
+    padding: 8px 12px;
+    font-size: $fontSize;
+    color: #605e5c;
+    font-style: italic;
+}

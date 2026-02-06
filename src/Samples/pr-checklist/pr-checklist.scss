@@ -1,0 +1,43 @@
+@import "node_modules/azure-devops-ui/Core/_platformCommon.scss";
+
+.pr-checklist {
+    padding: 16px;
+
+    .check-item {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 12px;
+    }
+
+    .check-pass { color: var(--success-text-color); }
+    .check-fail { color: var(--error-text-color); }
+
+    .section-title {
+        font-weight: 600;
+        margin-top: 16px;
+        margin-bottom: 8px;
+    }
+
+    .file-list {
+        font-size: 12px;
+        color: var(--text-secondary-color);
+        list-style: none;
+        padding-left: 0;
+    }
+
+    .file-list li { margin-bottom: 4px; }
+
+    .work-item-list {
+        list-style: none;
+        padding-left: 0;
+    }
+
+    .work-item-list li {
+        margin-bottom: 6px;
+    }
+
+    .work-item-list a {
+        color: var(--primary-text-color);
+    }
+}

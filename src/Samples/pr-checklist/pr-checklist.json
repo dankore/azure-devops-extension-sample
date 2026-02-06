@@ -1,0 +1,15 @@
+{
+    "contributions": [
+        {
+            "id": "pr-checklist-tab",
+            "type": "ms.vss-web.tab",
+            "targets": [
+                "ms.vss-code-web.pr-tabs"
+            ],
+            "properties": {
+                "name": "Checklist",
+                "uri": "dist/pr-checklist/pr-checklist.html"
+            }
+        }
+    ]
+}
