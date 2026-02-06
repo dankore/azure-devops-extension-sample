@@ -2,7 +2,7 @@
     "manifestVersion": 1,
     "id": "project-creator-dashboard",
     "publisher": "dankore-software",
-    "version": "1.0.5",
+    "version": "1.0.6",
     "name": "Project Creator (Dashboard)",
     "description": "Create new Azure DevOps projects directly from your dashboard.",
     "categories": [
