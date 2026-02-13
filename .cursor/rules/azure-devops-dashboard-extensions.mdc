@@ -1,0 +1,32 @@
+---
+description: When the user asks to create a new Azure DevOps dashboard extension or widget, follow the steps in docs/CREATING-DASHBOARD-EXTENSIONS.md and this checklist.
+globs: 
+alwaysApply: false
+---
+
+# New dashboard extension checklist
+
+When asked to **create a new Azure DevOps dashboard extension** (or "widget I can add to the dashboard"):
+
+1. **Read** `docs/CREATING-DASHBOARD-EXTENSIONS.md` for the full process.
+
+2. **Create the widget sample** under `src/Samples/{kebab-name}/`:
+   - `{name}.tsx` – React component, SDK.init + register, implement Dashboard.IConfigurableWidget (preload, load, reload), showRootComponent.
+   - `{name}.html` – root div + script src `{name}.js`.
+   - `{name}.scss` – styles (import azure-devops-ui platform scss).
+   - `{name}.json` – contribution: `ms.vss-dashboards-web.widget`, targets `ms.vss-dashboards-web.widget-catalog`, uri `dist/{name}/{name}.html`, and required scopes.
+
+3. **Create the extension manifest** at repo root: `azure-devops-extension-{short-id}.json` with unique id, publisher, version 1.0.0, name, description, categories, icons, files (static + dist).
+
+4. **Create a dedicated logo** with ImageMagick (128×128 PNG in `static/`):
+   - `magick -size 128x128 xc:'#0078d4' -fill white -draw "..." static/{logo-name}.png`
+   - Set extension manifest `icons.default` and contribution `catalogIconUrl` to `static/{logo-name}.png`.
+
+5. **Build**: `npm run compile:dev` (webpack auto-includes all folders under `src/Samples/`).
+
+6. **Package**: `npx tfx extension create --manifest-globs azure-devops-extension-{short-id}.json src/Samples/{name}/{name}.json`
+   - Output: `dankore-software.{extension-id}-{version}.vsix`.
+
+7. **Bump version** in the extension manifest when repackaging after changes (e.g. 1.0.0 → 1.0.1).
+
+Reference implementations in this repo: `project-navigator`, `project-creator`, `global-wiki-page-creator`, `global-work-item-creator`.

@@ -1,0 +1,45 @@
+@import "azure-devops-ui/Core/_platformCommon.scss";
+
+#root {
+    overflow: hidden;
+}
+
+.wipd-content {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    width: 100%;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+.wipd-body {
+    flex: 1;
+    overflow-y: auto;
+    margin-bottom: 16px;
+}
+
+.wipd-field {
+    margin-bottom: 16px;
+}
+
+.wipd-label {
+    font-weight: 600;
+    font-size: 12px;
+    color: #605e5c;
+    display: block;
+    margin-bottom: 4px;
+}
+
+.wipd-value {
+    font-size: $fontSize;
+    color: #323130;
+}
+
+.wipd-button-bar {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+    padding-top: 16px;
+    border-top: 1px solid rgba(0, 0, 0, 0.1);
+}

@@ -1,12 +1,12 @@
 {
     "manifestVersion": 1,
-    "id": "global-work-item-creator",
+    "id": "global-wiki-page-viewer",
     "publisher": "dankore-software",
-    "version": "2.0.26",
-    "name": "Global Work Item Creator",
-    "description": "Create stories and tasks in any project from your dashboard. Pick project, work item type, area path, and create work items across all your Azure DevOps projects.",
+    "version": "1.0.8",
+    "name": "Global Wiki Page Viewer",
+    "description": "View wiki pages from any project in a modal on your dashboard.",
     "categories": [
-        "Azure Boards"
+        "Azure Repos"
     ],
     "public": false,
     "targets": [
@@ -15,7 +15,7 @@
         }
     ],
     "icons": {
-        "default": "static/logo.png"
+        "default": "static/global-wiki-page-viewer-logo.png"
     },
     "content": {
         "details": {
@@ -33,3 +33,4 @@
         }
     ]
 }
+

@@ -1,0 +1,24 @@
+{
+  "contributions": [
+    {
+      "id": "global-work-item-search-widget",
+      "type": "ms.vss-dashboards-web.widget",
+      "targets": ["ms.vss-dashboards-web.widget-catalog"],
+      "properties": {
+        "name": "Global Work Item Search",
+        "description": "Search work items across all projects. Open in new tab or preview in panel.",
+        "catalogIconUrl": "static/global-work-item-search-logo.png",
+        "uri": "dist/global-work-item-search/global-work-item-search.html",
+        "isNameConfigurable": true,
+        "supportedSizes": [
+          { "rowSpan": 2, "columnSpan": 2 },
+          { "rowSpan": 2, "columnSpan": 3 },
+          { "rowSpan": 3, "columnSpan": 2 },
+          { "rowSpan": 3, "columnSpan": 3 }
+        ],
+        "supportedScopes": ["project_team"]
+      }
+    }
+  ],
+  "scopes": ["vso.work", "vso.project"]
+}

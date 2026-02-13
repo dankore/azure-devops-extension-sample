@@ -20,6 +20,8 @@
     "build:dev": "npm run compile:dev && npm run postbuild",
     "postbuild": "npm run package-extension -- --rev-version",
     "package-extension": "tfx extension create --manifest-globs azure-devops-extension.json src/Samples/**/*.json",
+    "package-wiki-viewer": "tfx extension create --manifest-globs azure-devops-extension-global-wiki-page-viewer.json src/Samples/global-wiki-page-viewer/*.json src/Samples/wiki-page-viewer-dialog/*.json",
+    "package-work-item-search": "tfx extension create --manifest-globs azure-devops-extension-global-work-item-search.json src/Samples/global-work-item-search/*.json src/Samples/work-item-preview-dialog/*.json",
     "publish-extension": "tfx extension publish --manifest-globs azure-devops-extension.json src/Samples/**/*.json",
     "publish-extension:dev": "tfx extension publish --manifest-globs azure-devops-extension-dev.json src/Samples/**/*.json",
     "test": "cross-env TEST_REPORT_FILENAME=test-results.xml jest --verbose",
@@ -27,6 +29,7 @@
   },
   "dependencies": {
     "azure-devops-extension-api": "^4.234.0",
+    "marked": "^12.0.0",
     "azure-devops-extension-sdk": "^3.1.2",
     "azure-devops-ui": "^2.167.63",
     "react": "~16.13.1",

@@ -1,0 +1,142 @@
+@import "azure-devops-ui/Core/_platformCommon.scss";
+
+#root {
+    overflow: hidden;
+}
+
+.gwis-content {
+    padding: 16px 20px;
+    width: 100%;
+    height: 100%;
+    box-sizing: border-box;
+    border-radius: 4px;
+    border: 1px solid rgba(0, 0, 0, 0.06);
+    background: #ffffff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.03);
+    overflow-y: auto;
+}
+
+.gwis-title {
+    font-size: $fontSizeL;
+    margin: 0 0 4px 0;
+    font-weight: 600;
+    letter-spacing: 0.01em;
+    color: #004578;
+}
+
+.gwis-subtitle {
+    margin: 0 0 16px 0;
+    font-size: $fontSize;
+    color: #605e5c;
+}
+
+.gwis-field {
+    margin-bottom: 16px;
+}
+
+.gwis-label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 4px;
+    font-size: $fontSize;
+}
+
+.gwis-status {
+    padding: 10px 12px;
+    margin-bottom: 16px;
+    border-radius: 4px;
+    font-size: $fontSize;
+
+    &.error {
+        background: #fde7e9;
+        color: #a80000;
+    }
+
+    &.success {
+        background: #dff6dd;
+        color: #107c10;
+    }
+}
+
+.gwis-results {
+    margin-top: 12px;
+}
+
+.gwis-no-results {
+    padding: 16px;
+    color: #605e5c;
+    font-size: $fontSize;
+}
+
+.gwis-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.gwis-list-item {
+    margin-bottom: 4px;
+}
+
+.gwis-result-button {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    width: 100%;
+    padding: 10px 12px;
+    background: #fff;
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    border-radius: 4px;
+    cursor: pointer;
+    text-align: left;
+    font-family: inherit;
+    transition: background 0.15s, border-color 0.15s;
+
+    &:hover {
+        background: #f3f2f1;
+        border-color: rgba(0, 0, 0, 0.2);
+    }
+
+    &:focus {
+        outline: 1px solid #0078d4;
+        border-color: #0078d4;
+    }
+}
+
+.gwis-result-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 4px;
+}
+
+.gwis-result-id {
+    font-weight: 600;
+    color: #0078d4;
+}
+
+.gwis-result-title {
+    font-weight: 500;
+    color: #323130;
+}
+
+.gwis-result-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    font-size: 12px;
+    color: #605e5c;
+}
+
+.gwis-result-actions {
+    display: flex;
+    gap: 8px;
+    margin-top: 8px;
+}
+
+.gwis-loading {
+    padding: 16px;
+    color: #605e5c;
+    font-size: $fontSize;
+}

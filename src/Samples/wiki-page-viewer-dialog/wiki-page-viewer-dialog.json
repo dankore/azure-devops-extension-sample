@@ -1,0 +1,13 @@
+{
+    "contributions": [
+        {
+            "id": "wiki-page-viewer-dialog",
+            "type": "ms.vss-web.external-content",
+            "properties": {
+                "name": "Wiki Page Viewer Dialog",
+                "uri": "dist/wiki-page-viewer-dialog/wiki-page-viewer-dialog.html",
+                "registeredObjectId": "wiki-page-viewer-dialog"
+            }
+        }
+    ]
+}
