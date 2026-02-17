@@ -1,0 +1,14 @@
+{
+  "contributions": [
+    {
+      "id": "daily-security-tips-config",
+      "type": "ms.vss-dashboards-web.widget-configuration",
+      "targets": ["ms.vss-dashboards-web.widget-configuration"],
+      "properties": {
+        "name": "Daily Security Tips configuration",
+        "uri": "dist/daily-security-tips-config/daily-security-tips-config.html"
+      }
+    }
+  ],
+  "scopes": []
+}

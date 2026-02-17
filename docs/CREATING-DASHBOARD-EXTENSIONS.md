@@ -162,6 +162,7 @@ When you change the extension (e.g. add logo, fix bug), bump the **version** in 
 | Project Navigator | `azure-devops-extension-project-navigator.json` | `project-navigator` | `static/project-navigator-logo.png` |
 | Global Wiki Page Creator | `azure-devops-extension-global-wiki-page-creator.json` | `global-wiki-page-creator` | `static/global-wiki-page-creator-logo.png` |
 | Global Work Item Search | `azure-devops-extension-global-work-item-search.json` | `global-work-item-search` + `work-item-preview-dialog` | `static/global-work-item-search-logo.png` |
+| Daily Security Tips | `azure-devops-extension-daily-security-tips.json` | `daily-security-tips` | `static/daily-security-tips-logo.png` |
 
 ---
 

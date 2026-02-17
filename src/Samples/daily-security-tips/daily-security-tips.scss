@@ -1,0 +1,74 @@
+@import "azure-devops-ui/Core/_platformCommon.scss";
+
+#root {
+    overflow: hidden;
+}
+
+.dst-content {
+    padding: 16px 20px;
+    width: 100%;
+    height: 100%;
+    box-sizing: border-box;
+    border-radius: 4px;
+    border: 1px solid rgba(0, 0, 0, 0.06);
+    background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.03);
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.dst-row {
+    flex-shrink: 0;
+
+    &.dst-row-tip {
+        flex: 1;
+        min-height: 0;
+    }
+}
+
+.dst-custom-header {
+    font-size: $fontSize;
+    line-height: 1.5;
+    color: #323130;
+
+    h1, h2, h3 { margin: 0 0 4px 0; }
+    p { margin: 0 0 4px 0; }
+    p:last-child { margin-bottom: 0; }
+}
+
+.dst-title {
+    font-size: $fontSizeL;
+    margin: 0 0 4px 0;
+    font-weight: 600;
+    letter-spacing: 0.01em;
+    color: #004578;
+}
+
+.dst-subtitle {
+    margin: 0 0 16px 0;
+    font-size: 12px;
+    color: #605e5c;
+}
+
+.dst-tip-card {
+    background: #fff;
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    border-left: 4px solid #0078d4;
+    border-radius: 4px;
+    padding: 16px;
+    margin-top: 8px;
+}
+
+.dst-tip-text {
+    font-size: $fontSize;
+    line-height: 1.5;
+    color: #323130;
+}
+
+.dst-tip-day {
+    font-size: 11px;
+    color: #605e5c;
+    margin-top: 12px;
+}
