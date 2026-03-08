@@ -1,0 +1,558 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>2025 Refund Optimizer — Federal (Est.)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #000000;
+      --surface: #0a0a0a;
+      --surface-elevated: #141414;
+      --border: rgba(255,255,255,.06);
+      --text: #f5f5f7;
+      --text-secondary: #86868b;
+      --accent: #0071e3;
+      --accent-hover: #0077ed;
+      --success: #34c759;
+      --radius: 12px;
+      --radius-lg: 20px;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Segoe UI', Roboto, sans-serif;
+      font-size: 15px;
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .app {
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 48px 24px 80px;
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 48px;
+      align-items: start;
+    }
+    @media (max-width: 768px) {
+      .layout { grid-template-columns: 1fr; }
+    }
+
+    /* Header: minimal */
+    .header {
+      margin-bottom: 48px;
+      text-align: center;
+    }
+    .header h1 {
+      font-size: 28px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      margin: 0 0 8px;
+      color: var(--text);
+    }
+    .header .badge {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 500;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+
+    /* Hero result */
+    .hero {
+      text-align: center;
+      padding: 40px 24px;
+      margin-bottom: 24px;
+      background: linear-gradient(180deg, var(--surface-elevated) 0%, var(--surface) 100%);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+    }
+    .hero-label {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 8px;
+    }
+    .hero-value {
+      font-size: 48px;
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      color: var(--text);
+    }
+    .hero-value.positive { color: var(--success); }
+    .hero-sub {
+      font-size: 14px;
+      color: var(--text-secondary);
+      margin-top: 12px;
+    }
+
+    /* Input section */
+    .section {
+      margin-bottom: 32px;
+    }
+    .section-title {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin-bottom: 16px;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+    @media (max-width: 520px) {
+      .form-grid { grid-template-columns: 1fr; }
+    }
+
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .field.full { grid-column: 1 / -1; }
+    .field label {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text-secondary);
+    }
+    .field input,
+    .field select {
+      width: 100%;
+      padding: 12px 14px;
+      font-size: 15px;
+      font-family: inherit;
+      color: var(--text);
+      background: var(--surface-elevated);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      outline: none;
+      transition: border-color .2s, box-shadow .2s;
+    }
+    .field input:focus,
+    .field select:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(0,113,227,.25);
+    }
+    .field input::placeholder { color: var(--text-secondary); }
+
+    /* Advanced: collapsed by default */
+    .advanced {
+      margin-top: 24px;
+      padding-top: 24px;
+      border-top: 1px solid var(--border);
+    }
+    .advanced-toggle {
+      background: none;
+      border: none;
+      color: var(--accent);
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      padding: 0;
+      margin-bottom: 16px;
+    }
+    .advanced-toggle:hover { text-decoration: underline; }
+    .advanced-content { display: none; }
+    .advanced-content.open { display: block; }
+
+    /* Buttons */
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 32px;
+    }
+    .btn {
+      appearance: none;
+      border: none;
+      border-radius: var(--radius);
+      font-size: 15px;
+      font-weight: 600;
+      font-family: inherit;
+      cursor: pointer;
+      padding: 14px 24px;
+      transition: background .2s, transform .1s;
+    }
+    .btn:active { transform: scale(0.98); }
+    .btn-primary {
+      background: var(--accent);
+      color: #fff;
+    }
+    .btn-primary:hover { background: var(--accent-hover); }
+    .btn-secondary {
+      background: var(--surface-elevated);
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+    .btn-secondary:hover { background: rgba(255,255,255,.06); }
+
+    /* Stats row under hero */
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1px;
+      background: var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      margin-bottom: 24px;
+    }
+    .stat {
+      background: var(--surface);
+      padding: 16px 20px;
+    }
+    .stat-label {
+      font-size: 12px;
+      color: var(--text-secondary);
+      margin-bottom: 4px;
+    }
+    .stat-value {
+      font-size: 17px;
+      font-weight: 600;
+    }
+
+    /* Breakdown: minimal list */
+    .breakdown {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+    }
+    .breakdown-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 20px;
+      border-bottom: 1px solid var(--border);
+      font-size: 14px;
+    }
+    .breakdown-row:last-child { border-bottom: none; }
+    .breakdown-row .label { color: var(--text-secondary); }
+    .breakdown-row .value {
+      font-weight: 500;
+      font-variant-numeric: tabular-nums;
+    }
+
+    /* Footer note */
+    .footer-note {
+      font-size: 12px;
+      color: var(--text-secondary);
+      margin-top: 32px;
+      padding-top: 24px;
+      border-top: 1px solid var(--border);
+    }
+    .footer-note a { color: var(--accent); text-decoration: none; }
+    .footer-note a:hover { text-decoration: underline; }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <header class="header">
+      <p class="badge">2025 · Federal estimate</p>
+      <h1>Refund Optimizer</h1>
+    </header>
+
+    <div class="layout">
+      <div class="col-input">
+        <!-- Inputs -->
+        <section class="section">
+          <h2 class="section-title">Your numbers</h2>
+          <div class="form-grid">
+            <div class="field">
+              <label>Filing status</label>
+              <select id="status">
+                <option value="HOH" selected>Head of Household</option>
+                <option value="SINGLE">Single</option>
+                <option value="MFJ">Married Filing Jointly</option>
+                <option value="MFS">Married Filing Separately</option>
+              </select>
+            </div>
+            <div class="field">
+              <label>Qualifying children (EITC)</label>
+              <select id="kids">
+                <option value="0">0</option>
+                <option value="1" selected>1</option>
+                <option value="2">2</option>
+                <option value="3">3+</option>
+              </select>
+            </div>
+            <div class="field">
+              <label>W-2 wages</label>
+              <input id="wages" type="number" min="0" step="1" value="44038" />
+            </div>
+            <div class="field">
+              <label>Federal withholding</label>
+              <input id="withholding" type="number" min="0" step="1" value="4179" />
+            </div>
+            <div class="field full">
+              <label>Schedule C net (profit or loss)</label>
+              <input id="schedc" type="number" step="1" value="-22574" placeholder="0 if none" />
+            </div>
+            <div class="field">
+              <label>Refundable AOTC (0–1000)</label>
+              <input id="aotc" type="number" min="0" max="1000" step="1" value="0" />
+            </div>
+          </div>
+
+          <div class="advanced">
+            <button type="button" class="advanced-toggle" id="advancedToggle" aria-expanded="false">Optimizer range & step</button>
+            <div class="advanced-content" id="advancedContent">
+              <div class="form-grid">
+                <div class="field">
+                  <label>Schedule C search min</label>
+                  <input id="minC" type="number" step="1" value="-60000" />
+                </div>
+                <div class="field">
+                  <label>Schedule C search max</label>
+                  <input id="maxC" type="number" step="1" value="20000" />
+                </div>
+                <div class="field">
+                  <label>Step size</label>
+                  <input id="stepC" type="number" min="1" step="1" value="25" />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="actions">
+            <button type="button" class="btn btn-primary" id="calcBtn">Calculate</button>
+            <button type="button" class="btn btn-primary" id="optBtn">Optimize refund</button>
+            <button type="button" class="btn btn-secondary" id="resetBtn">Reset</button>
+          </div>
+        </section>
+      </div>
+
+      <div class="col-result">
+        <!-- Hero: the number that matters -->
+        <section class="hero">
+          <p class="hero-label">Estimated refund</p>
+          <p class="hero-value" id="heroRefund">$0</p>
+          <p class="hero-sub" id="heroSub">Enter your numbers and tap Calculate</p>
+        </section>
+
+        <!-- Key stats -->
+        <div class="stats">
+          <div class="stat">
+            <div class="stat-label">Schedule C net (best)</div>
+            <div class="stat-value" id="bestSchedC">—</div>
+          </div>
+          <div class="stat">
+            <div class="stat-label">Earned income</div>
+            <div class="stat-value" id="bestEarned">—</div>
+          </div>
+          <div class="stat">
+            <div class="stat-label">Taxable income</div>
+            <div class="stat-value" id="bestTaxable">—</div>
+          </div>
+          <div class="stat">
+            <div class="stat-label">EITC + ACTC</div>
+            <div class="stat-value" id="creditsSummary">—</div>
+          </div>
+        </div>
+
+        <!-- Breakdown -->
+        <section class="section">
+          <h2 class="section-title">Breakdown</h2>
+          <div class="breakdown" id="breakdown">
+            <div class="breakdown-row"><span class="label">Federal withholding</span><span class="value">$0</span></div>
+          </div>
+        </section>
+      </div>
+    </div>
+
+    <p class="footer-note">
+      2025 rules: EITC phase-in/out, ACTC $1,700 cap, standard deduction, federal brackets. No state, SE tax, or QBI. For planning only.
+    </p>
+  </div>
+
+  <script>
+    // ---------- 2025 constants ----------
+    const EITC_SINGLE = {
+      0: {pinRate:0.0765, pinEnd:  8490, max:  649, poutBeg:10620, poutRate:0.0765, poutEnd:19104},
+      1: {pinRate:0.34,   pinEnd: 12730, max: 4328, poutBeg:23350, poutRate:0.1598, poutEnd:50434},
+      2: {pinRate:0.40,   pinEnd: 17880, max: 7152, poutBeg:23350, poutRate:0.2106, poutEnd:57310},
+      3: {pinRate:0.45,   pinEnd: 17880, max: 8046, poutBeg:23350, poutRate:0.2106, poutEnd:61555}
+    };
+    const EITC_MFJ = {
+      0: {pinRate:0.0765, pinEnd:  8490, max:  649, poutBeg:17730, poutRate:0.0765, poutEnd:26214},
+      1: {pinRate:0.34,   pinEnd: 12730, max: 4328, poutBeg:30470, poutRate:0.1598, poutEnd:57554},
+      2: {pinRate:0.40,   pinEnd: 17880, max: 7152, poutBeg:30470, poutRate:0.2106, poutEnd:64430},
+      3: {pinRate:0.45,   pinEnd: 17880, max: 8046, poutBeg:30470, poutRate:0.2106, poutEnd:68675}
+    };
+    const STD = { SINGLE:15750, MFS:15750, MFJ:31500, HOH:23625 };
+    const ACTC_CAP_PER_CHILD = 1700;
+    const BRACKETS = {
+      HOH:    [[23850,0.10],[96950,0.12],[206700,0.22],[394600,0.24],[501050,0.32],[751600,0.35],[Infinity,0.37]],
+      SINGLE: [[11925,0.10],[48475,0.12],[103350,0.22],[197300,0.24],[250525,0.32],[626350,0.35],[Infinity,0.37]],
+      MFS:    [[11925,0.10],[48475,0.12],[103350,0.22],[197300,0.24],[250525,0.32],[375800,0.35],[Infinity,0.37]],
+      MFJ:    [[23850,0.10],[96950,0.12],[206700,0.22],[394600,0.24],[501050,0.32],[751600,0.35],[Infinity,0.37]]
+    };
+
+    function money(x) {
+      const s = (Math.round(x*100)/100).toLocaleString(undefined,{minimumFractionDigits:0, maximumFractionDigits:2});
+      return (x < 0 ? "-$" : "$") + Math.abs(x).toLocaleString(undefined,{minimumFractionDigits:0, maximumFractionDigits:2});
+    }
+    function clamp(x, min, max) { return Math.max(min, Math.min(max, x)); }
+
+    function computeTax(taxable, status) {
+      taxable = Math.max(0, taxable);
+      const br = BRACKETS[status] || BRACKETS.HOH;
+      let tax = 0, prev = 0;
+      for (const [cap, rate] of br) {
+        const amt = Math.min(taxable, cap) - prev;
+        if (amt > 0) tax += amt * rate;
+        prev = cap;
+        if (taxable <= cap) break;
+      }
+      return tax;
+    }
+
+    function computeEITC(earnedIncome, agi, status, kids) {
+      kids = Math.min(3, Math.max(0, kids));
+      const params = (status === "MFJ") ? EITC_MFJ[kids] : EITC_SINGLE[kids];
+      const income = Math.max(0, Math.max(earnedIncome, agi));
+      if (income >= params.poutEnd) return 0;
+      let credit = Math.min(params.max, Math.max(0, earnedIncome) * params.pinRate);
+      if (income > params.poutBeg) {
+        const reduction = (income - params.poutBeg) * params.poutRate;
+        credit = params.max - reduction;
+      } else {
+        if (earnedIncome >= params.pinEnd) credit = params.max;
+      }
+      return Math.max(0, Math.min(params.max, credit));
+    }
+
+    function computeACTC(earnedIncome, numQualifyingChildren) {
+      const ei = Math.max(0, earnedIncome);
+      const cap = ACTC_CAP_PER_CHILD * Math.max(0, numQualifyingChildren);
+      const raw = Math.max(0, (ei - 2500) * 0.15);
+      return Math.min(cap, raw);
+    }
+
+    function calcOnce(inputs) {
+      const wages = Math.max(0, inputs.wages);
+      const schedc = inputs.schedc;
+      const withholding = Math.max(0, inputs.withholding);
+      const kids = Math.min(3, Math.max(0, inputs.kids));
+      const status = inputs.status;
+      const aotc = clamp(inputs.aotc, 0, 1000);
+      const earnedIncome = wages + schedc;
+      const agi = wages + schedc;
+      const stdDed = STD[status] || STD.HOH;
+      const taxable = Math.max(0, agi - stdDed);
+      const tax = computeTax(taxable, status);
+      const eitc = computeEITC(earnedIncome, agi, status, kids);
+      const actc = computeACTC(earnedIncome, kids);
+      const refund = withholding + eitc + actc + aotc - tax;
+      return { wages, schedc, withholding, kids, status, aotc, earnedIncome, agi, stdDed, taxable, tax, eitc, actc, refund };
+    }
+
+    function optimize(inputs) {
+      const minC = inputs.minC, maxC = inputs.maxC, step = inputs.stepC;
+      let best = null;
+      for (let sc = minC; sc <= maxC; sc += step) {
+        const r = calcOnce({ ...inputs, schedc: sc });
+        if (best === null || r.refund > best.refund) best = r;
+      }
+      return best;
+    }
+
+    function getInputsFromUI() {
+      return {
+        status: document.getElementById('status').value,
+        wages: Number(document.getElementById('wages').value || 0),
+        withholding: Number(document.getElementById('withholding').value || 0),
+        kids: Number(document.getElementById('kids').value || 0),
+        aotc: Number(document.getElementById('aotc').value || 0),
+        schedc: Number(document.getElementById('schedc').value || 0),
+        minC: Number(document.getElementById('minC').value || 0),
+        maxC: Number(document.getElementById('maxC').value || 0),
+        stepC: Math.max(1, Number(document.getElementById('stepC').value || 25))
+      };
+    }
+
+    const breakdownRows = [
+      ["W-2 wages", "wages"],
+      ["Schedule C net", "schedc"],
+      ["Earned income", "earnedIncome"],
+      ["AGI", "agi"],
+      ["Standard deduction", "stdDed", true],
+      ["Taxable income", "taxable"],
+      ["Income tax", "tax", true],
+      ["Withholding", "withholding"],
+      ["EITC", "eitc"],
+      ["ACTC", "actc"],
+      ["AOTC", "aotc"],
+      ["Refund", "refund"]
+    ];
+
+    function render(result) {
+      const heroRefund = document.getElementById('heroRefund');
+      heroRefund.textContent = money(result.refund);
+      heroRefund.classList.toggle('positive', result.refund > 0);
+      document.getElementById('heroSub').textContent = result.refund > 0 ? 'Based on your entries above' : 'Enter your numbers and tap Calculate';
+      document.getElementById('bestSchedC').textContent = money(result.schedc);
+      document.getElementById('bestEarned').textContent = money(result.earnedIncome);
+      document.getElementById('bestTaxable').textContent = money(result.taxable);
+      document.getElementById('creditsSummary').textContent = money(result.eitc + result.actc);
+
+      const tbody = document.getElementById('breakdown');
+      tbody.innerHTML = '';
+      for (const [label, key, neg] of breakdownRows) {
+        let val = result[key];
+        if (neg && key !== 'refund') val = -val;
+        const row = document.createElement('div');
+        row.className = 'breakdown-row';
+        row.innerHTML = '<span class="label">' + label + '</span><span class="value">' + money(val) + '</span>';
+        tbody.appendChild(row);
+      }
+    }
+
+    document.getElementById('calcBtn').addEventListener('click', () => {
+      render(calcOnce(getInputsFromUI()));
+    });
+    document.getElementById('optBtn').addEventListener('click', () => {
+      render(optimize(getInputsFromUI()));
+    });
+    document.getElementById('resetBtn').addEventListener('click', () => {
+      document.getElementById('status').value = 'HOH';
+      document.getElementById('wages').value = 44038;
+      document.getElementById('withholding').value = 4179;
+      document.getElementById('kids').value = 1;
+      document.getElementById('aotc').value = 0;
+      document.getElementById('schedc').value = -22574;
+      document.getElementById('minC').value = -60000;
+      document.getElementById('maxC').value = 20000;
+      document.getElementById('stepC').value = 25;
+      render(calcOnce(getInputsFromUI()));
+    });
+
+    document.getElementById('advancedToggle').addEventListener('click', () => {
+      const content = document.getElementById('advancedContent');
+      const open = content.classList.toggle('open');
+      document.getElementById('advancedToggle').setAttribute('aria-expanded', open);
+    });
+
+    render(calcOnce(getInputsFromUI()));
+  </script>
+</body>
+</html>
