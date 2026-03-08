@@ -101,6 +101,21 @@
       color: var(--text-secondary);
       margin-top: 12px;
     }
+    .hero-actions {
+      margin-top: 16px;
+    }
+    .hero-actions .view-breakdown {
+      background: none;
+      border: none;
+      color: var(--accent);
+      font-size: 14px;
+      font-weight: 500;
+      font-family: inherit;
+      cursor: pointer;
+      padding: 0;
+      text-decoration: none;
+    }
+    .hero-actions .view-breakdown:hover { text-decoration: underline; }
 
     /* Input section */
     .section {
@@ -252,7 +267,78 @@
       font-variant-numeric: tabular-nums;
     }
 
-    /* Footer note */
+    /* Modal / dialog */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,.5);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      z-index: 1000;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.25s ease, visibility 0.25s ease;
+    }
+    .modal-overlay.open {
+      opacity: 1;
+      visibility: visible;
+    }
+    body.modal-open { overflow: hidden; }
+    .modal {
+      background: var(--surface-elevated);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      width: 100%;
+      max-width: 420px;
+      max-height: 85vh;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 24px 48px rgba(0,0,0,.4);
+      transform: scale(0.96);
+      transition: transform 0.25s ease;
+    }
+    .modal-overlay.open .modal {
+      transform: scale(1);
+    }
+    .modal-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 20px 24px;
+      border-bottom: 1px solid var(--border);
+    }
+    .modal-title {
+      font-size: 17px;
+      font-weight: 600;
+      color: var(--text);
+    }
+    .modal-close {
+      background: none;
+      border: none;
+      color: var(--accent);
+      font-size: 15px;
+      font-weight: 500;
+      font-family: inherit;
+      cursor: pointer;
+      padding: 4px 0;
+    }
+    .modal-close:hover { opacity: 0.85; }
+    .modal-body {
+      padding: 8px 0;
+      overflow-y: auto;
+    }
+    .modal .breakdown {
+      border: none;
+      border-radius: 0;
+      margin: 0;
+    }
+    .modal .breakdown-row {
+      padding: 14px 24px;
+    }
     .footer-note {
       font-size: 12px;
       color: var(--text-secondary);
@@ -347,6 +433,9 @@
           <p class="hero-label">Estimated refund</p>
           <p class="hero-value" id="heroRefund">$0</p>
           <p class="hero-sub" id="heroSub">Enter your numbers and tap Calculate</p>
+          <div class="hero-actions">
+            <button type="button" class="view-breakdown" id="viewBreakdownBtn">View breakdown</button>
+          </div>
         </section>
 
         <!-- Key stats -->
@@ -368,14 +457,21 @@
             <div class="stat-value" id="creditsSummary">—</div>
           </div>
         </div>
+      </div>
+    </div>
 
-        <!-- Breakdown -->
-        <section class="section">
-          <h2 class="section-title">Breakdown</h2>
+    <!-- Breakdown modal -->
+    <div class="modal-overlay" id="breakdownModal" aria-hidden="true" aria-modal="true" role="dialog" aria-labelledby="modalTitle">
+      <div class="modal" role="document">
+        <div class="modal-header">
+          <h2 class="modal-title" id="modalTitle">Breakdown</h2>
+          <button type="button" class="modal-close" id="modalClose" aria-label="Close">Done</button>
+        </div>
+        <div class="modal-body">
           <div class="breakdown" id="breakdown">
             <div class="breakdown-row"><span class="label">Federal withholding</span><span class="value">$0</span></div>
           </div>
-        </section>
+        </div>
       </div>
     </div>
 
@@ -551,6 +647,32 @@
       const open = content.classList.toggle('open');
       document.getElementById('advancedToggle').setAttribute('aria-expanded', open);
     });
+
+    (function setupBreakdownModal() {
+      const overlay = document.getElementById('breakdownModal');
+      const openBtn = document.getElementById('viewBreakdownBtn');
+      const closeBtn = document.getElementById('modalClose');
+      function openModal() {
+        overlay.classList.add('open');
+        overlay.setAttribute('aria-hidden', 'false');
+        document.body.classList.add('modal-open');
+        closeBtn.focus();
+      }
+      function closeModal() {
+        overlay.classList.remove('open');
+        overlay.setAttribute('aria-hidden', 'true');
+        document.body.classList.remove('modal-open');
+        openBtn.focus();
+      }
+      openBtn.addEventListener('click', openModal);
+      closeBtn.addEventListener('click', closeModal);
+      overlay.addEventListener('click', function(e) {
+        if (e.target === overlay) closeModal();
+      });
+      document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape' && overlay.classList.contains('open')) closeModal();
+      });
+    })();
 
     render(calcOnce(getInputsFromUI()));
   </script>
