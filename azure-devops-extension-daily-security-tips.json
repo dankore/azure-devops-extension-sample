@@ -2,7 +2,7 @@
   "manifestVersion": 1,
   "id": "daily-security-tips",
   "publisher": "dankore-software",
-  "version": "1.0.2",
+  "version": "1.0.4",
   "name": "Daily Security Tips",
   "description": "One security tip per day for teams handling sensitive data. Configurable header, resets every 24 hours.",
   "categories": ["Azure Boards"],

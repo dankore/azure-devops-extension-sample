@@ -7,12 +7,14 @@ import { showRootComponent } from "../../Common";
 
 interface IDailySecurityTipsSettings {
     customHeaderText?: string;
+    aiModel?: string;
 }
 
 const SIZE_OPTIONS = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
 
 interface IDailySecurityTipsConfigState {
     customHeaderText: string;
+    aiModel: string;
     width: number;
     height: number;
 }
@@ -25,7 +27,7 @@ class DailySecurityTipsConfig extends React.Component<{}, IDailySecurityTipsConf
 
     constructor(props: {}) {
         super(props);
-        this.state = { customHeaderText: "", width: 2, height: 2 };
+        this.state = { customHeaderText: "", aiModel: "", width: 2, height: 2 };
     }
 
     public componentDidMount(): void {
@@ -80,6 +82,20 @@ class DailySecurityTipsConfig extends React.Component<{}, IDailySecurityTipsConf
                         Shown in the top row above the daily tip. Supports plain text and Markdown. Saved when you click Save.
                     </div>
                 </div>
+                <div className="dstc-field">
+                    <label className="dstc-label">AI model name (optional)</label>
+                    <TextField
+                        value={this.state.aiModel}
+                        onChange={(_, value) => {
+                            this.updateSettings({ aiModel: value || "" });
+                            this.setState({ aiModel: value || "" });
+                        }}
+                        placeholder="e.g. llama3.1"
+                    />
+                    <div className="dstc-hint">
+                        If left blank, the default model configured in the widget code will be used.
+                    </div>
+                </div>
             </div>
         );
     }
@@ -129,6 +145,7 @@ class DailySecurityTipsConfig extends React.Component<{}, IDailySecurityTipsConf
             this.settings = parsed;
             this.setState({
                 customHeaderText: parsed.customHeaderText || "",
+                aiModel: parsed.aiModel || "",
                 width: Math.min(10, Math.max(1, width)),
                 height: Math.min(10, Math.max(1, height))
             });
@@ -136,6 +153,7 @@ class DailySecurityTipsConfig extends React.Component<{}, IDailySecurityTipsConf
             this.settings = {};
             this.setState({
                 customHeaderText: "",
+                aiModel: "",
                 width: Math.min(10, Math.max(1, width)),
                 height: Math.min(10, Math.max(1, height))
             });

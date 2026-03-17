@@ -3,20 +3,12 @@ import * as React from "react";
 import * as SDK from "azure-devops-extension-sdk";
 import * as Dashboard from "azure-devops-extension-api/Dashboard";
 import { marked } from "marked";
-import { SECURITY_TIPS } from "./security-tips";
 import { showRootComponent } from "../../Common";
+import { getTipForTodayFromOllama, refreshTodayTipPreserveWeek } from "./ai-security-tips";
 
 interface IDailySecurityTipsSettings {
     customHeaderText?: string;
-}
-
-/** Returns the tip index for today. Same tip all day, resets at midnight (local time). */
-function getTipIndexForToday(): number {
-    const now = new Date();
-    const start = new Date(now.getFullYear(), 0, 0);
-    const diff = now.getTime() - start.getTime();
-    const dayOfYear = Math.floor(diff / (1000 * 60 * 60 * 24));
-    return dayOfYear % SECURITY_TIPS.length;
+    aiModel?: string;
 }
 
 function formatDate(d: Date): string {
@@ -31,24 +23,39 @@ function formatDate(d: Date): string {
 interface IDailySecurityTipsState {
     customHeaderText: string;
     customHeaderHtml: string;
+    loading: boolean;
+    error?: string;
+    tipText: string;
 }
 
 class DailySecurityTips extends React.Component<{}, IDailySecurityTipsState> implements Dashboard.IConfigurableWidget {
+    private widgetId: string | undefined;
+    private aiModel: string | undefined;
+    private fetchInFlight: boolean = false;
+    private lastLoadKey: string | undefined;
+
     constructor(props: {}) {
         super(props);
-        this.state = { customHeaderText: "", customHeaderHtml: "" };
+        this.state = {
+            customHeaderText: "",
+            customHeaderHtml: "",
+            loading: true,
+            error: undefined,
+            tipText: ""
+        };
     }
 
     public componentDidMount(): void {
         SDK.init().then(() => {
             SDK.register("daily-security-tips-widget", this);
+            const config = SDK.getConfiguration();
+            this.widgetId = (config as any)?.widgetId || (config as any)?.id;
         });
     }
 
     public render(): JSX.Element {
-        const tipIndex = getTipIndexForToday();
-        const tip = SECURITY_TIPS[tipIndex];
         const today = formatDate(new Date());
+        const { loading, error, tipText } = this.state;
 
         return (
             <div className="dst-content">
@@ -64,12 +71,38 @@ class DailySecurityTips extends React.Component<{}, IDailySecurityTipsState> imp
                 </div>
                 <div className="dst-row dst-row-tip">
                     <div className="dst-tip-card">
-                        <div className="dst-tip-text">{tip}</div>
-                        <div className="dst-tip-day">{today}</div>
+                        <div className="dst-tip-meta">
+                            <div className="dst-tip-day">{today}</div>
+                            <button
+                                className="dst-refresh-button"
+                                type="button"
+                                onClick={() => this.onRefreshClick()}
+                                disabled={loading}
+                                aria-label="Get another tip"
+                                title="Get another tip"
+                            >
+                                <span className="dst-refresh-icon" aria-hidden="true">
+                                    ⟳
+                                </span>
+                            </button>
+                        </div>
+                        <div className="dst-tip-text">
+                            {loading && !error && <span>Loading today&apos;s security tip…</span>}
+                            {!loading && !error && tipText && <span>{tipText}</span>}
+                            {!loading && error && (
+                                <span>
+                                    {tipText || "Unable to load AI security tip right now."}
+                                </span>
+                            )}
+                        </div>
                     </div>
                 </div>
             </div>
         );
+    }
+
+    private onRefreshClick(): void {
+        this.loadTipFromOllama(true);
     }
 
     private escapeHtml(text: string): string {
@@ -82,6 +115,7 @@ class DailySecurityTips extends React.Component<{}, IDailySecurityTipsState> imp
         try {
             const parsed = JSON.parse(widgetSettings.customSettings?.data || "{}") as IDailySecurityTipsSettings;
             const text = parsed.customHeaderText || "";
+            this.aiModel = parsed.aiModel;
             this.setState({ customHeaderText: text });
             if (text) {
                 Promise.resolve(marked.parse(text, { gfm: true }) as string | Promise<string>)
@@ -90,8 +124,39 @@ class DailySecurityTips extends React.Component<{}, IDailySecurityTipsState> imp
             } else {
                 this.setState({ customHeaderHtml: "" });
             }
+
+            this.loadTipFromOllama();
         } catch {
-            this.setState({ customHeaderText: "", customHeaderHtml: "" });
+            this.aiModel = undefined;
+            this.setState({ customHeaderText: "", customHeaderHtml: "", tipText: "", loading: false, error: "Invalid widget settings." });
+        }
+    }
+
+    private async loadTipFromOllama(refreshTodayOnly: boolean = false): Promise<void> {
+        const todayKey = new Date().toISOString().split("T")[0];
+        const loadKey = `${todayKey}:${this.aiModel || ""}:${refreshTodayOnly ? "refresh" : "normal"}`;
+
+        if (!refreshTodayOnly && (this.fetchInFlight || this.lastLoadKey === loadKey)) {
+            return;
+        }
+
+        try {
+            this.fetchInFlight = true;
+            this.lastLoadKey = loadKey;
+            this.setState({ loading: true, error: undefined });
+            const result = refreshTodayOnly
+                ? await refreshTodayTipPreserveWeek(this.widgetId, this.aiModel)
+                : await getTipForTodayFromOllama(this.widgetId, this.aiModel, { bypassCache: false });
+            this.setState({ tipText: result.tip, loading: false, error: undefined });
+        } catch (e) {
+            const message = e instanceof Error ? e.message : "Failed to load AI tip.";
+            this.setState({
+                loading: false,
+                error: message,
+                tipText: this.state.tipText || "Stay alert for phishing emails and unexpected access requests, and verify through trusted channels before acting."
+            });
+        } finally {
+            this.fetchInFlight = false;
         }
     }
 
