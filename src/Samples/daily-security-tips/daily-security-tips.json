@@ -6,7 +6,7 @@
       "targets": ["ms.vss-dashboards-web.widget-catalog", ".daily-security-tips-config"],
       "properties": {
         "name": "Daily Security Tips",
-        "description": "One security tip per day for handling sensitive data. Configurable header. Resets every 24 hours.",
+        "description": "One security tip per day for handling sensitive data. Optional custom header; two-column layout.",
         "catalogIconUrl": "static/daily-security-tips-logo.png",
         "uri": "dist/daily-security-tips/daily-security-tips.html",
         "isNameConfigurable": true,

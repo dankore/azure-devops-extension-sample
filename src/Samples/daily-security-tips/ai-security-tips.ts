@@ -194,6 +194,20 @@ async function fetchSingleTipFromOllama(model: string = DEFAULT_MODEL): Promise<
     return tip;
 }
 
+/** When the weekly cache is valid, returns today’s tip without calling Ollama. */
+export function getCachedTipIfValid(widgetId: string | undefined): { tip: string; tipsForWeek: string[] } | null {
+    const weekStart = getCurrentWeekStart();
+    const weekStartIso = toIsoDateOnly(weekStart);
+    const cached = loadCachedWeek(widgetId);
+    if (cached && cached.weekStartIso === weekStartIso && Array.isArray(cached.tips) && cached.tips.length >= 7) {
+        const today = new Date();
+        const weekdayIndex = today.getDay();
+        const tip = cached.tips[weekdayIndex] || cached.tips[0];
+        return { tip, tipsForWeek: cached.tips };
+    }
+    return null;
+}
+
 export async function getTipForTodayFromOllama(
     widgetId: string | undefined,
     model: string = DEFAULT_MODEL,

@@ -7,33 +7,26 @@ import { showRootComponent } from "../../Common";
 
 interface IDailySecurityTipsSettings {
     customHeaderText?: string;
-    aiModel?: string;
 }
-
-const SIZE_OPTIONS = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
 
 interface IDailySecurityTipsConfigState {
     customHeaderText: string;
-    aiModel: string;
-    width: number;
-    height: number;
 }
 
 class DailySecurityTipsConfig extends React.Component<{}, IDailySecurityTipsConfigState>
     implements Dashboard.IWidgetConfiguration {
     private widgetConfigurationContext?: Dashboard.IWidgetConfigurationContext;
     private settings: IDailySecurityTipsSettings = {};
-    private widgetName: string = "";
 
     constructor(props: {}) {
         super(props);
-        this.state = { customHeaderText: "", aiModel: "", width: 2, height: 2 };
+        this.state = { customHeaderText: "" };
     }
 
     public componentDidMount(): void {
         SDK.init().then(() => {
             SDK.register("daily-security-tips-config", this);
-            SDK.resize(450, 320);
+            SDK.resize(420, 220);
         });
     }
 
@@ -41,75 +34,22 @@ class DailySecurityTipsConfig extends React.Component<{}, IDailySecurityTipsConf
         return (
             <div className="dstc-content">
                 <div className="dstc-field">
-                    <label className="dstc-label">Width (columns)</label>
-                    <select
-                        className="dstc-select"
-                        value={this.state.width}
-                        onChange={(e) => this.onSizeChange("width", parseInt(e.target.value, 10))}
-                        aria-label="Widget width"
-                    >
-                        {SIZE_OPTIONS.map((n) => (
-                            <option key={n} value={n}>{n}</option>
-                        ))}
-                    </select>
-                </div>
-                <div className="dstc-field">
-                    <label className="dstc-label">Height (rows)</label>
-                    <select
-                        className="dstc-select"
-                        value={this.state.height}
-                        onChange={(e) => this.onSizeChange("height", parseInt(e.target.value, 10))}
-                        aria-label="Widget height"
-                    >
-                        {SIZE_OPTIONS.map((n) => (
-                            <option key={n} value={n}>{n}</option>
-                        ))}
-                    </select>
-                </div>
-                <div className="dstc-field">
-                    <label className="dstc-label">Custom header text (top row)</label>
+                    <label className="dstc-label">Custom header text (optional)</label>
                     <TextField
                         multiline
-                        rows={4}
+                        rows={5}
                         value={this.state.customHeaderText}
                         onChange={(_, value) => {
                             this.updateSettings({ customHeaderText: value || "" });
                             this.setState({ customHeaderText: value || "" });
                         }}
-                        placeholder="e.g. Security reminder for [Your Team Name], or leave blank."
+                        placeholder="e.g. Security reminder for your team, or leave blank for the default title."
                     />
                     <div className="dstc-hint">
-                        Shown in the top row above the daily tip. Supports plain text and Markdown. Saved when you click Save.
-                    </div>
-                </div>
-                <div className="dstc-field">
-                    <label className="dstc-label">AI model name (optional)</label>
-                    <TextField
-                        value={this.state.aiModel}
-                        onChange={(_, value) => {
-                            this.updateSettings({ aiModel: value || "" });
-                            this.setState({ aiModel: value || "" });
-                        }}
-                        placeholder="e.g. llama3.1"
-                    />
-                    <div className="dstc-hint">
-                        If left blank, the default model configured in the widget code will be used.
+                        Shown above the daily tip. Plain text and Markdown supported. Save with the dialog Save button.
                     </div>
                 </div>
             </div>
-        );
-    }
-
-    private onSizeChange(dim: "width" | "height", value: number): void {
-        const width = dim === "width" ? value : this.state.width;
-        const height = dim === "height" ? value : this.state.height;
-        this.setState({ width, height });
-        this.widgetConfigurationContext?.notify(
-            Dashboard.ConfigurationEvent.GeneralSettingsChanged,
-            Dashboard.ConfigurationEvent.Args({
-                name: this.widgetName,
-                size: { rowSpan: height, columnSpan: width }
-            })
         );
     }
 
@@ -134,28 +74,17 @@ class DailySecurityTipsConfig extends React.Component<{}, IDailySecurityTipsConf
         widgetConfigurationContext: Dashboard.IWidgetConfigurationContext
     ): Promise<Dashboard.WidgetStatus> {
         this.widgetConfigurationContext = widgetConfigurationContext;
-        this.widgetName = widgetSettings.name || "";
-
-        const size = widgetSettings.size;
-        const width = size?.columnSpan ?? 2;
-        const height = size?.rowSpan ?? 2;
 
         try {
             const parsed = JSON.parse(widgetSettings.customSettings?.data || "{}") as IDailySecurityTipsSettings;
             this.settings = parsed;
             this.setState({
-                customHeaderText: parsed.customHeaderText || "",
-                aiModel: parsed.aiModel || "",
-                width: Math.min(10, Math.max(1, width)),
-                height: Math.min(10, Math.max(1, height))
+                customHeaderText: parsed.customHeaderText || ""
             });
         } catch {
             this.settings = {};
             this.setState({
-                customHeaderText: "",
-                aiModel: "",
-                width: Math.min(10, Math.max(1, width)),
-                height: Math.min(10, Math.max(1, height))
+                customHeaderText: ""
             });
         }
         return Dashboard.WidgetStatusHelper.Success();

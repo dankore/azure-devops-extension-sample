@@ -20,21 +20,3 @@
     color: #605e5c;
     margin-top: 4px;
 }
-
-.dstc-select {
-    width: 100%;
-    min-height: 32px;
-    padding: 6px 10px;
-    font-size: $fontSize;
-    font-family: inherit;
-    border: 1px solid rgba(0, 0, 0, 0.2);
-    border-radius: 2px;
-    background: #fff;
-    color: #323130;
-    cursor: pointer;
-
-    &:focus {
-        outline: 1px solid #0078d4;
-        border-color: #0078d4;
-    }
-}

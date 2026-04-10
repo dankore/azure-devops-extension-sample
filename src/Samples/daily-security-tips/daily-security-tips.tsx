@@ -4,11 +4,55 @@ import * as SDK from "azure-devops-extension-sdk";
 import * as Dashboard from "azure-devops-extension-api/Dashboard";
 import { marked } from "marked";
 import { showRootComponent } from "../../Common";
-import { getTipForTodayFromOllama, refreshTodayTipPreserveWeek } from "./ai-security-tips";
+import { getCachedTipIfValid, getTipForTodayFromOllama, refreshTodayTipPreserveWeek } from "./ai-security-tips";
 
 interface IDailySecurityTipsSettings {
     customHeaderText?: string;
-    aiModel?: string;
+}
+
+interface IDailySecurityTipsState {
+    customHeaderText: string;
+    customHeaderHtml: string;
+    loading: boolean;
+    error?: string;
+    tipText: string;
+    tipHtml: string;
+}
+
+/** Right column: security-themed SVG + CSS (decorative). */
+function SecurityArtPanel(): JSX.Element {
+    return (
+        <div className="dst-art" aria-hidden="true">
+            <div className="dst-art-bg" />
+            <svg className="dst-art-svg" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                    <linearGradient id="dstArtBg" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" stopColor="#e8f4fc" />
+                        <stop offset="100%" stopColor="#d0e8f7" />
+                    </linearGradient>
+                    <linearGradient id="dstArtShield" x1="0%" y1="0%" x2="0%" y2="100%">
+                        <stop offset="0%" stopColor="#0078d4" />
+                        <stop offset="100%" stopColor="#004578" />
+                    </linearGradient>
+                </defs>
+                <rect width="200" height="200" fill="url(#dstArtBg)" rx="12" />
+                <path
+                    d="M100 28 L148 52 V108 C148 142 128 168 100 180 C72 168 52 142 52 108 V52 Z"
+                    fill="url(#dstArtShield)"
+                    opacity="0.92"
+                />
+                <path
+                    d="M100 52 L128 68 V102 C128 124 116 140 100 148 C84 140 72 124 72 102 V68 Z"
+                    fill="rgba(255,255,255,0.25)"
+                />
+                <circle cx="100" cy="96" r="14" fill="none" stroke="#ffffff" strokeWidth="4" opacity="0.9" />
+                <path d="M94 96 L98 100 L108 88" fill="none" stroke="#ffffff" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round" opacity="0.95" />
+                <circle cx="44" cy="48" r="3" fill="#0078d4" opacity="0.35" />
+                <circle cx="162" cy="56" r="2.5" fill="#0078d4" opacity="0.3" />
+                <circle cx="156" cy="150" r="4" fill="#0078d4" opacity="0.25" />
+            </svg>
+        </div>
+    );
 }
 
 function formatDate(d: Date): string {
@@ -20,19 +64,9 @@ function formatDate(d: Date): string {
     });
 }
 
-interface IDailySecurityTipsState {
-    customHeaderText: string;
-    customHeaderHtml: string;
-    loading: boolean;
-    error?: string;
-    tipText: string;
-}
-
 class DailySecurityTips extends React.Component<{}, IDailySecurityTipsState> implements Dashboard.IConfigurableWidget {
     private widgetId: string | undefined;
-    private aiModel: string | undefined;
     private fetchInFlight: boolean = false;
-    private lastLoadKey: string | undefined;
 
     constructor(props: {}) {
         super(props);
@@ -41,7 +75,8 @@ class DailySecurityTips extends React.Component<{}, IDailySecurityTipsState> imp
             customHeaderHtml: "",
             loading: true,
             error: undefined,
-            tipText: ""
+            tipText: "",
+            tipHtml: ""
         };
     }
 
@@ -55,46 +90,53 @@ class DailySecurityTips extends React.Component<{}, IDailySecurityTipsState> imp
 
     public render(): JSX.Element {
         const today = formatDate(new Date());
-        const { loading, error, tipText } = this.state;
+        const { loading, error, tipText, tipHtml } = this.state;
 
         return (
             <div className="dst-content">
-                <div className="dst-row dst-row-header">
-                    {this.state.customHeaderText ? (
-                        <div
-                            className="dst-custom-header"
-                            dangerouslySetInnerHTML={{ __html: this.state.customHeaderHtml || this.escapeHtml(this.state.customHeaderText) }}
-                        />
-                    ) : (
-                        <h2 className="dst-title">Daily Security Tip</h2>
-                    )}
-                </div>
-                <div className="dst-row dst-row-tip">
-                    <div className="dst-tip-card">
-                        <div className="dst-tip-meta">
-                            <div className="dst-tip-day">{today}</div>
-                            <button
-                                className="dst-refresh-button"
-                                type="button"
-                                onClick={() => this.onRefreshClick()}
-                                disabled={loading}
-                                aria-label="Get another tip"
-                                title="Get another tip"
-                            >
-                                <span className="dst-refresh-icon" aria-hidden="true">
-                                    ⟳
-                                </span>
-                            </button>
-                        </div>
-                        <div className="dst-tip-text">
-                            {loading && !error && <span>Loading today&apos;s security tip…</span>}
-                            {!loading && !error && tipText && <span>{tipText}</span>}
-                            {!loading && error && (
-                                <span>
-                                    {tipText || "Unable to load AI security tip right now."}
-                                </span>
+                <div className="dst-split">
+                    <div className="dst-col-left">
+                        <div className="dst-row dst-row-header">
+                            {this.state.customHeaderText ? (
+                                <div
+                                    className="dst-custom-header"
+                                    dangerouslySetInnerHTML={{ __html: this.state.customHeaderHtml || this.escapeHtml(this.state.customHeaderText) }}
+                                />
+                            ) : (
+                                <h2 className="dst-title">Daily Security Tip</h2>
                             )}
                         </div>
+                        <div className="dst-tip-card">
+                            <div className="dst-tip-meta">
+                                <div className="dst-tip-day">{today}</div>
+                                <button
+                                    className="dst-refresh-button"
+                                    type="button"
+                                    onClick={() => this.onRefreshClick()}
+                                    disabled={loading}
+                                    aria-label="Get another tip"
+                                    title="Get another tip"
+                                >
+                                    <span className="dst-refresh-icon" aria-hidden="true">
+                                        ⟳
+                                    </span>
+                                </button>
+                            </div>
+                            <div className="dst-tip-text dst-tip-markdown">
+                                {loading && !error && <span>Loading today&apos;s security tip…</span>}
+                                {!loading && !error && tipHtml && (
+                                    <div dangerouslySetInnerHTML={{ __html: tipHtml }} />
+                                )}
+                                {!loading && error && (
+                                    <span>
+                                        {tipText || "Unable to load AI security tip right now."}
+                                    </span>
+                                )}
+                            </div>
+                        </div>
+                    </div>
+                    <div className="dst-col-right">
+                        <SecurityArtPanel />
                     </div>
                 </div>
             </div>
@@ -111,11 +153,26 @@ class DailySecurityTips extends React.Component<{}, IDailySecurityTipsState> imp
         return div.innerHTML.replace(/\n/g, "<br>");
     }
 
+    private ensureWidgetId(): void {
+        if (this.widgetId) {
+            return;
+        }
+        const config = SDK.getConfiguration();
+        this.widgetId = (config as any)?.widgetId || (config as any)?.id;
+    }
+
+    private async tipMarkdownToHtml(text: string): Promise<string> {
+        try {
+            return await Promise.resolve(marked.parse(text, { gfm: true }) as string | Promise<string>);
+        } catch {
+            return this.escapeHtml(text);
+        }
+    }
+
     private parseSettings(widgetSettings: Dashboard.WidgetSettings): void {
         try {
             const parsed = JSON.parse(widgetSettings.customSettings?.data || "{}") as IDailySecurityTipsSettings;
             const text = parsed.customHeaderText || "";
-            this.aiModel = parsed.aiModel;
             this.setState({ customHeaderText: text });
             if (text) {
                 Promise.resolve(marked.parse(text, { gfm: true }) as string | Promise<string>)
@@ -127,33 +184,47 @@ class DailySecurityTips extends React.Component<{}, IDailySecurityTipsState> imp
 
             this.loadTipFromOllama();
         } catch {
-            this.aiModel = undefined;
-            this.setState({ customHeaderText: "", customHeaderHtml: "", tipText: "", loading: false, error: "Invalid widget settings." });
+            this.setState({ customHeaderText: "", customHeaderHtml: "", tipText: "", tipHtml: "", loading: false, error: "Invalid widget settings." });
         }
     }
 
     private async loadTipFromOllama(refreshTodayOnly: boolean = false): Promise<void> {
-        const todayKey = new Date().toISOString().split("T")[0];
-        const loadKey = `${todayKey}:${this.aiModel || ""}:${refreshTodayOnly ? "refresh" : "normal"}`;
+        this.ensureWidgetId();
 
-        if (!refreshTodayOnly && (this.fetchInFlight || this.lastLoadKey === loadKey)) {
+        if (!refreshTodayOnly) {
+            const cached = getCachedTipIfValid(this.widgetId);
+            if (cached) {
+                const tipHtml = await this.tipMarkdownToHtml(cached.tip);
+                this.setState({
+                    loading: false,
+                    error: undefined,
+                    tipText: cached.tip,
+                    tipHtml
+                });
+                return;
+            }
+        }
+
+        if (this.fetchInFlight) {
             return;
         }
 
+        this.fetchInFlight = true;
+        this.setState({ loading: true, error: undefined });
+
         try {
-            this.fetchInFlight = true;
-            this.lastLoadKey = loadKey;
-            this.setState({ loading: true, error: undefined });
             const result = refreshTodayOnly
-                ? await refreshTodayTipPreserveWeek(this.widgetId, this.aiModel)
-                : await getTipForTodayFromOllama(this.widgetId, this.aiModel, { bypassCache: false });
-            this.setState({ tipText: result.tip, loading: false, error: undefined });
+                ? await refreshTodayTipPreserveWeek(this.widgetId)
+                : await getTipForTodayFromOllama(this.widgetId);
+            const tipHtml = await this.tipMarkdownToHtml(result.tip);
+            this.setState({ tipText: result.tip, tipHtml, loading: false, error: undefined });
         } catch (e) {
             const message = e instanceof Error ? e.message : "Failed to load AI tip.";
             this.setState({
                 loading: false,
                 error: message,
-                tipText: this.state.tipText || "Stay alert for phishing emails and unexpected access requests, and verify through trusted channels before acting."
+                tipText: this.state.tipText || "Stay alert for phishing emails and unexpected access requests, and verify through trusted channels before acting.",
+                tipHtml: this.state.tipHtml || ""
             });
         } finally {
             this.fetchInFlight = false;
