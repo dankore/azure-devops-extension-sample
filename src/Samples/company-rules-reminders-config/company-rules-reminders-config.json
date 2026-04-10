@@ -1,0 +1,14 @@
+{
+  "contributions": [
+    {
+      "id": "company-rules-reminders-config",
+      "type": "ms.vss-dashboards-web.widget-configuration",
+      "targets": ["ms.vss-dashboards-web.widget-configuration"],
+      "properties": {
+        "name": "Company Rules Reminders configuration",
+        "uri": "dist/company-rules-reminders-config/company-rules-reminders-config.html"
+      }
+    }
+  ],
+  "scopes": []
+}

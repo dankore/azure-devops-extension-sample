@@ -23,6 +23,7 @@
     "package-wiki-viewer": "tfx extension create --manifest-globs azure-devops-extension-global-wiki-page-viewer.json src/Samples/global-wiki-page-viewer/*.json src/Samples/wiki-page-viewer-dialog/*.json",
     "package-work-item-search": "tfx extension create --manifest-globs azure-devops-extension-global-work-item-search.json src/Samples/global-work-item-search/*.json src/Samples/work-item-preview-dialog/*.json",
     "package-daily-security-tips": "tfx extension create --manifest-globs azure-devops-extension-daily-security-tips.json src/Samples/daily-security-tips/*.json src/Samples/daily-security-tips-config/*.json",
+    "package-company-rules-reminders": "tfx extension create --manifest-globs azure-devops-extension-company-rules-reminders.json src/Samples/company-rules-reminders/*.json",
     "publish-extension": "tfx extension publish --manifest-globs azure-devops-extension.json src/Samples/**/*.json",
     "publish-extension:dev": "tfx extension publish --manifest-globs azure-devops-extension-dev.json src/Samples/**/*.json",
     "test": "cross-env TEST_REPORT_FILENAME=test-results.xml jest --verbose",

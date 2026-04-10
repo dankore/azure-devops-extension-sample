@@ -87,7 +87,7 @@
 .dst-refresh-button {
     border: none;
     background: transparent;
-    padding: 2px 4px;
+    padding: 4px 8px;
     border-radius: 999px;
     cursor: pointer;
     color: #605e5c;
@@ -97,7 +97,8 @@
 
     .dst-refresh-icon {
         display: inline-block;
-        font-size: 12px;
+        font-size: 18px;
+        line-height: 1;
     }
 
     &:hover:not(:disabled),
