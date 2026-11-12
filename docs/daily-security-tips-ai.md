@@ -32,6 +32,13 @@ curl -X POST "https://ollama-proxy.omen.dankoresoft.com/v1/chat/completions" \
 
 If your Ollama proxy expects a different model name, update the `model` field above or set the model in the widget configuration.
 
+### Proxy access, rate limits, and errors
+
+- The widget sends **no token**. The proxy accepts token-less requests from Azure DevOps / Marketplace origins (`*.gallerycdn.vsassets.io`, `*.gallery.vsassets.io`, `*.visualstudio.com`, `dev.azure.com`) and rate-limits them (about 20 requests per minute per client). Never add the proxy's server token to the extension: the `.vsix` is public.
+- Each load makes at most one request (no automatic retries) with a 90-second timeout; the shared call lives in `src/OllamaProxy.ts`.
+- On failure the widget keeps showing the previous (or a built-in) tip and adds a short status line, e.g. *AI is busy, try again in a minute.* for HTTP 429.
+- The proxy's 429 and 401 responses currently carry no CORS headers, so the browser reports them as network errors; the widget then says *Could not reach the AI service. It may be busy or offline; try again in a minute.*
+
 ### Weekly caching behavior
 
 - The widget computes the start of the **current week** (Sunday at 00:00 local time).

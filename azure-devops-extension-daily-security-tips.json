@@ -2,7 +2,7 @@
   "manifestVersion": 1,
   "id": "daily-security-tips",
   "publisher": "dankore-software",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "name": "Daily Security Tips",
   "description": "One security tip per day for teams handling sensitive data. Optional custom header; weekly AI tips with cache.",
   "categories": ["Azure Boards"],

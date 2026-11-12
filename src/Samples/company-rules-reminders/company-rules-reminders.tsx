@@ -128,9 +128,14 @@ class CompanyRulesReminders extends React.Component<{}, ICompanyRulesRemindersSt
                                     <div dangerouslySetInnerHTML={{ __html: reminderHtml }} />
                                 )}
                                 {!loading && error && (
-                                    <span>
-                                        {reminderText || "Unable to load handbook reminder right now."}
-                                    </span>
+                                    <>
+                                        {reminderHtml ? (
+                                            <div dangerouslySetInnerHTML={{ __html: reminderHtml }} />
+                                        ) : (
+                                            reminderText && <span>{reminderText}</span>
+                                        )}
+                                        <div className="crr-tip-error" role="status">{error}</div>
+                                    </>
                                 )}
                             </div>
                         </div>
@@ -194,7 +199,12 @@ class CompanyRulesReminders extends React.Component<{}, ICompanyRulesRemindersSt
         this.setState({ loading: true, error: undefined });
 
         try {
-            const handbookText = await this.resolveHandbookText(FIXED_PROJECT_NAME, FIXED_WIKI_IDENTIFIER, FIXED_WIKI_PAGE_PATH);
+            let handbookText: string;
+            try {
+                handbookText = await this.resolveHandbookText(FIXED_PROJECT_NAME, FIXED_WIKI_IDENTIFIER, FIXED_WIKI_PAGE_PATH);
+            } catch {
+                throw new Error("Could not load the handbook page. Check wiki access and try again.");
+            }
             const result = refreshTodayOnly
                 ? await refreshTodayReminder(this.widgetId, sourceKey, handbookText)
                 : await getReminderForToday(this.widgetId, sourceKey, handbookText);
@@ -212,7 +222,7 @@ class CompanyRulesReminders extends React.Component<{}, ICompanyRulesRemindersSt
             this.setState({
                 loading: false,
                 error: message,
-                reminderText: this.state.reminderText || "Could not load the handbook page. Check wiki access and try again.",
+                reminderText: this.state.reminderText,
                 reminderHtml: this.state.reminderHtml || ""
             });
         } finally {

@@ -1,4 +1,4 @@
-const OLLAMA_PROXY_URL = "https://ollama-proxy.omen.dankoresoft.com/v1/chat/completions";
+import { postChatCompletion } from "../../OllamaProxy";
 
 // Must match a model exposed by the proxy (/v1/models or /api/tags).
 const DEFAULT_MODEL = "llama3.2:latest";
@@ -97,36 +97,10 @@ async function fetchWeeklyTipsFromOllama(model: string = DEFAULT_MODEL): Promise
         "Generate 7 distinct daily security tips for the upcoming week for a remote software team that works across continents. " +
         "Each tip should be 1–2 sentences, concrete and actionable. Respond as a numbered list from 1 to 7, with no extra commentary.";
 
-    const body = {
-        model,
-        messages: [
-            { role: "system", content: systemPrompt },
-            { role: "user", content: userPrompt }
-        ],
-        temperature: 0.7
-    };
-
-    // Use a "simple" CORS request (avoid preflight) by not using application/json.
-    const response = await fetch(OLLAMA_PROXY_URL, {
-        method: "POST",
-        headers: {
-            "Content-Type": "text/plain"
-        } as HeadersInit,
-        body: JSON.stringify(body)
-    });
-
-    if (!response.ok) {
-        throw new Error(`Ollama proxy error: ${response.status} ${response.statusText}`);
-    }
-
-    const json = await response.json() as {
-        choices?: Array<{ message?: { content?: string } }>;
-    };
-
-    const content = json.choices?.[0]?.message?.content;
-    if (!content) {
-        throw new Error("No content returned from Ollama proxy.");
-    }
+    const content = await postChatCompletion(model, [
+        { role: "system", content: systemPrompt },
+        { role: "user", content: userPrompt }
+    ]);
 
     const tips = parseTipsFromResponseText(content);
     if (!tips.length) {
@@ -155,38 +129,10 @@ async function fetchSingleTipFromOllama(model: string = DEFAULT_MODEL): Promise<
         "Generate one daily security tip for a remote software team that works across continents. " +
         "The tip should be 1–2 sentences, concrete and actionable. Respond with the tip only, no numbering or extra commentary.";
 
-    const body = {
-        model,
-        messages: [
-            { role: "system", content: systemPrompt },
-            { role: "user", content: userPrompt }
-        ],
-        temperature: 0.7
-    };
-
-    // Use a "simple" CORS request (avoid preflight) by not using application/json.
-    const response = await fetch(OLLAMA_PROXY_URL, {
-        method: "POST",
-        headers: {
-            "Content-Type": "text/plain"
-        } as HeadersInit,
-        body: JSON.stringify(body)
-    });
-
-    if (!response.ok) {
-        throw new Error(`Ollama proxy error: ${response.status} ${response.statusText}`);
-    }
-
-    const json = await response.json() as {
-        choices?: Array<{ message?: { content?: string } }>;
-    };
-
-    const content = json.choices?.[0]?.message?.content;
-    if (!content) {
-        throw new Error("No content returned from Ollama proxy.");
-    }
-
-    const tip = content.trim();
+    const tip = await postChatCompletion(model, [
+        { role: "system", content: systemPrompt },
+        { role: "user", content: userPrompt }
+    ]);
     if (!tip) {
         throw new Error("Unable to parse tip from Ollama response.");
     }

@@ -128,9 +128,14 @@ class DailySecurityTips extends React.Component<{}, IDailySecurityTipsState> imp
                                     <div dangerouslySetInnerHTML={{ __html: tipHtml }} />
                                 )}
                                 {!loading && error && (
-                                    <span>
-                                        {tipText || "Unable to load AI security tip right now."}
-                                    </span>
+                                    <>
+                                        {tipHtml ? (
+                                            <div dangerouslySetInnerHTML={{ __html: tipHtml }} />
+                                        ) : (
+                                            <span>{tipText || "Unable to load AI security tip right now."}</span>
+                                        )}
+                                        <div className="dst-tip-error" role="status">{error}</div>
+                                    </>
                                 )}
                             </div>
                         </div>

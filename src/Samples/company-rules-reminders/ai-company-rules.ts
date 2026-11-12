@@ -1,4 +1,5 @@
-const OLLAMA_PROXY_URL = "https://ollama-proxy.omen.dankoresoft.com/v1/chat/completions";
+import { postChatCompletion } from "../../OllamaProxy";
+
 const DEFAULT_MODEL = "llama3.2:latest";
 
 interface CachedWeekdays {
@@ -73,36 +74,10 @@ function saveCache(widgetId: string | undefined, sourceKey: string, value: Cache
 }
 
 async function callChat(model: string, systemPrompt: string, userPrompt: string): Promise<string> {
-    const body = {
-        model,
-        messages: [
-            { role: "system", content: systemPrompt },
-            { role: "user", content: userPrompt }
-        ],
-        temperature: 0.7
-    };
-
-    const response = await fetch(OLLAMA_PROXY_URL, {
-        method: "POST",
-        headers: {
-            "Content-Type": "text/plain"
-        } as HeadersInit,
-        body: JSON.stringify(body)
-    });
-
-    if (!response.ok) {
-        throw new Error(`Ollama proxy error: ${response.status} ${response.statusText}`);
-    }
-
-    const json = await response.json() as {
-        choices?: Array<{ message?: { content?: string } }>;
-    };
-
-    const content = json.choices?.[0]?.message?.content;
-    if (!content) {
-        throw new Error("No content returned from Ollama proxy.");
-    }
-    return content.trim();
+    return postChatCompletion(model, [
+        { role: "system", content: systemPrompt },
+        { role: "user", content: userPrompt }
+    ]);
 }
 
 async function generateWeekdayReminders(handbookText: string, model: string): Promise<string[]> {

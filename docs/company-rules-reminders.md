@@ -11,6 +11,12 @@ It is now **zero-configuration**: no widget setup is required.
 - Reminder text is rendered with Markdown (`marked`) so `**bold**` shows as bold when the model still emits it; prompts also ask for plain text without markdown.
 - The refresh button still loads the handbook (needed for AI context) and regenerates **only today’s** reminder.
 
+## Proxy access and errors
+
+- Requests go to `https://ollama-proxy.omen.dankoresoft.com` with **no token** (allowed for Azure DevOps origins, rate-limited to about 20 requests per minute per client). See `src/OllamaProxy.ts`.
+- One request per load, no automatic retries, 90-second timeout.
+- Failures show a status line under the reminder: wiki problems say *Could not load the handbook page...*, HTTP 429 says *AI is busy, try again in a minute.*, and blocked/unreachable proxy responses say *Could not reach the AI service...*.
+
 ## Fixed source (hardcoded)
 
 - Project: `Dankore Software`
